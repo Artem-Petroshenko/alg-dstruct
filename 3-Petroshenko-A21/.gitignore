@@ -5,4 +5,6 @@
 **.vcxproj
 **.vcxproj.filters
 **.vcxproj.user
-LabA-var21/Test.txt
+**.config
+Tests/Test.txt
+LabA-var21/Base.txt
