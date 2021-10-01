@@ -34,11 +34,12 @@ typedef struct {
 	Node_t* head;
 }List_t;
 
-List_t* ListCreate(const char* filename);
+List_t* ListCreate(char* Word, int Key);
+Node_t* Create_Element(char* Word, int Key);
 void ListDestroy(List_t* List);
-void Fill(const char* filename, List_t* List);
-Node_t* Search(List_t* List, int DataKey);
+Node_t* Search_place(List_t* List, int DataKey);
 int Add(List_t* List, Node_t* new_element);
+int Search_Word(List_t* List, int DataKey);
 void Output(List_t* List);
 void MemoryLeaks(void);
 
