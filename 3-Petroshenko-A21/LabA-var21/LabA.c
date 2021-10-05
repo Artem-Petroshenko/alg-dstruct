@@ -1,19 +1,18 @@
 #include "LabA.h"
 
 List_t* ListCreate(char* Word, int Key) {								//creating the list with the first element
-	Node_t* head = Create_Element(Word, Key);
+	Node_t* head = ElementCreate(Word, Key);
 	List_t* List = (List_t*)malloc(sizeof(List_t));
 	if (!List)
 	{
-		free(head->data.Word);
-		free(head);
+		ElementDestroy(head);
 		return 0;
 	}
 	List->head = head;
 	return List;
 }
 
-Node_t* Create_Element(char* Word, int Key) {
+Node_t* ElementCreate(char* Word, int Key) {
 	Node_t* new_element = (Node_t*)malloc(sizeof(Node_t));
 	if (!new_element)
 		return NULL;
@@ -35,10 +34,14 @@ void ListDestroy(List_t* List) {										//freeing the memory
 	{
 		Node_t* deleted = temp_pointer;
 		temp_pointer = temp_pointer->next;
-		free(deleted->data.Word);
-		free(deleted);
+		ElementDestroy(deleted);
 	}
 	free(List);
+}
+
+void ElementDestroy(Node_t* element) {
+	free(element->data.Word);
+	free(element);
 }
 
 Node_t* Search_place(List_t* List, int DataKey) {
@@ -66,7 +69,7 @@ int Add(List_t* List, Node_t* new_element) {
 	{
 		if (place->data.Key == new_element->data.Key)
 			return Error;
-		if (place->next != NULL && place->next->data.Key == new_element->data.Key)
+		if (place->next && place->next->data.Key == new_element->data.Key)
 			return Error;
 		new_element->next = place->next;
 		place->next = new_element;
