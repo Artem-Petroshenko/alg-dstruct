@@ -45,7 +45,7 @@ void ElementDestroy(Node_t* element) {
 }
 
 List_t* Fill(const char* filename) {
-	List_t* List = NULL;
+	List_t* List;
 	char Word[N];
 	int Key;
 	FILE* F = fopen(filename, "r");
@@ -54,7 +54,12 @@ List_t* Fill(const char* filename) {
 		printf("File didn't open or there is no such file!\n");
 		return NULL;
 	}
-	if (fscanf(F, "%s %i", Word, &Key) != EOF)
+	if (fscanf(F, "%s %i", Word, &Key) == EOF)
+	{
+		printf("File is empty\n");
+		return NULL;
+	}
+	else
 		List = ListCreate(Word, Key);
 	while (fscanf(F, "%s %i", Word, &Key) != EOF)
 	{
