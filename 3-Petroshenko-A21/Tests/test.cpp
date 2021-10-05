@@ -147,3 +147,9 @@ TEST(Fill, FileisEmpty_ExpextedReturningNULL) {
 	List_t* test_list = Fill(filename);
 	EXPECT_TRUE(test_list == NULL);
 }
+
+TEST(Fill, NoFile_ExpextedReturningNULL) {
+	const char* filename = "NoFile.txt";
+	List_t* test_list = Fill(filename);
+	EXPECT_TRUE(test_list == NULL);
+}
