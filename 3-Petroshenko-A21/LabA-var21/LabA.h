@@ -38,6 +38,7 @@ List_t* ListCreate(char* Word, int Key);
 Node_t* ElementCreate(char* Word, int Key);
 void ListDestroy(List_t* List);
 void ElementDestroy(Node_t* element);
+List_t* Fill(const char* filename);
 Node_t* Search_place(List_t* List, int DataKey);
 int Add(List_t* List, Node_t* new_element);
 int Search_Word(List_t* List, int DataKey);

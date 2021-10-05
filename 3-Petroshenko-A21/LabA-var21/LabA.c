@@ -44,6 +44,30 @@ void ElementDestroy(Node_t* element) {
 	free(element);
 }
 
+List_t* Fill(const char* filename) {
+	List_t* List = NULL;
+	char Word[N];
+	int Key;
+	FILE* F = fopen(filename, "r");
+	if (!F)
+	{
+		printf("File didn't open or there is no such file!\n");
+		return NULL;
+	}
+	if (fscanf(F, "%s %i", Word, &Key) != EOF)
+		List = ListCreate(Word, Key);
+	while (fscanf(F, "%s %i", Word, &Key) != EOF)
+	{
+		Node_t* new_element = ElementCreate(Word, Key);
+		if (Add(List, new_element) == Error)
+		{
+			ElementDestroy(new_element);
+		}
+	}
+	fclose(F);
+	return List;
+}
+
 Node_t* Search_place(List_t* List, int DataKey) {
 	Node_t* pointer = List->head;
 	if (pointer->data.Key > DataKey)
