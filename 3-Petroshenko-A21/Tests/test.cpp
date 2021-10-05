@@ -129,7 +129,7 @@ TEST(Add, AddingElement_ExpectedAddingElementtotheRightPlace) {
 
 TEST(Fill, FillingList_ExpextedRightFilling) {
 	const char* filename = "Test.txt";
-	List_t test_list = *Fill(filename);
+	test_list = *Fill(filename);
 	EXPECT_TRUE(!strcmp(test_list.head->data.Word, "zero"));
 	EXPECT_EQ(test_list.head->data.Key, 0);
 	EXPECT_TRUE(!strcmp(test_list.head->next->data.Word, "first"));
@@ -140,4 +140,10 @@ TEST(Fill, FillingList_ExpextedRightFilling) {
 	EXPECT_EQ(test_list.head->next->next->next->data.Key, 3);
 	EXPECT_TRUE(!strcmp(test_list.head->next->next->next->next->data.Word, "4th"));
 	EXPECT_EQ(test_list.head->next->next->next->next->data.Key, 4);
+}
+
+TEST(Fill, FileisEmpty_ExpextedReturningNULL) {
+	const char* filename = "Empty.txt";
+	List_t* test_list = Fill(filename);
+	EXPECT_TRUE(test_list == NULL);
 }
