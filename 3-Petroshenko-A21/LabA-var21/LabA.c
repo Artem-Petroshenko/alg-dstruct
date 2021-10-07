@@ -2,11 +2,13 @@
 
 List_t* ListCreate(char* Word, int Key) {								//creating the list with the first element
 	Node_t* head = ElementCreate(Word, Key);
+	if (!head)
+		return NULL;
 	List_t* List = (List_t*)malloc(sizeof(List_t));
 	if (!List)
 	{
 		ElementDestroy(head);
-		return 0;
+		return NULL;
 	}
 	List->head = head;
 	return List;
@@ -61,31 +63,29 @@ List_t* Fill(const char* filename) {
 	}
 	else
 		List = ListCreate(Word, Key);
+	if (!List)
+		return NULL;
 	while (fscanf(F, "%s %i", Word, &Key) != EOF)
 	{
 		Node_t* new_element = ElementCreate(Word, Key);
 		if (Add(List, new_element) == Error)
-		{
 			ElementDestroy(new_element);
-		}
 	}
 	fclose(F);
 	return List;
 }
 
-Node_t* Search_place(List_t* List, int DataKey) {
+Node_t* PlaceSearch(List_t* List, int DataKey) {
 	Node_t* pointer = List->head;
 	if (pointer->data.Key > DataKey)
 		return NULL;
 	while (pointer->next && pointer->next->data.Key < DataKey)
-	{
 		pointer = pointer->next;
-	}
 	return pointer;
 }
 
 int Add(List_t* List, Node_t* new_element) {
-	Node_t* place = Search_place(List, new_element->data.Key);
+	Node_t* place = PlaceSearch(List, new_element->data.Key);
 	if (!place)
 	{
 		if (new_element->data.Key == List->head->data.Key)
@@ -106,7 +106,7 @@ int Add(List_t* List, Node_t* new_element) {
 	}
 }
 
-int Search_Word(List_t* List, int DataKey) {								// returns 1 if there is such a word and returns 0 if not
+int WordSearch(List_t* List, int DataKey) {								// returns 1 if there is such a word and returns 0 if not
 	Node_t* pointer = List->head;
 	while (pointer)
 	{

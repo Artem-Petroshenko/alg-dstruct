@@ -25,22 +25,22 @@ TEST(ListCreate, ListCreated_ExpectedListHeadnotNULLanditsDataisRight) {
 	ListDestroy(test_list);
 }
 
-TEST(Search_place, TheSmallestKeyNumber_ExpectedreturnNULL) {
+TEST(PlaceSearch, TheSmallestKeyNumber_ExpectedreturnNULL) {
 	head.data.Word = "head";
 	head.data.Key = 1;
 	head.next = NULL;
 	test_list.head = &head;
 	int test_key = 0;
-	EXPECT_TRUE(Search_place(&test_list, test_key) == NULL);
+	EXPECT_TRUE(PlaceSearch(&test_list, test_key) == NULL);
 }
 
-TEST(Search_place, UsualKeyNumber_ExpectedreturnNotNULL) {
+TEST(PlaceSearch, UsualKeyNumber_ExpectedreturnNotNULL) {
 	head.data.Word = "head";
 	head.data.Key = 1;
 	head.next = NULL;
 	test_list.head = &head;
 	int test_key = 2;
-	EXPECT_TRUE(Search_place(&test_list, test_key) == test_list.head);
+	EXPECT_TRUE(PlaceSearch(&test_list, test_key) == test_list.head);
 }
 
 TEST(Add, KeyNumbersAreEqual_ExpectedError) {
@@ -140,6 +140,16 @@ TEST(Fill, FillingList_ExpextedRightFilling) {
 	EXPECT_EQ(test_list.head->next->next->next->data.Key, 3);
 	EXPECT_TRUE(!strcmp(test_list.head->next->next->next->next->data.Word, "4th"));
 	EXPECT_EQ(test_list.head->next->next->next->next->data.Key, 4);
+	free(test_list.head->next->next->next->next->data.Word);
+	free(test_list.head->next->next->next->next);
+	free(test_list.head->next->next->next->data.Word);
+	free(test_list.head->next->next->next);
+	free(test_list.head->next->next->data.Word);
+	free(test_list.head->next->next);
+	free(test_list.head->next->data.Word);
+	free(test_list.head->next);
+	free(test_list.head->data.Word);
+	free(test_list.head);
 }
 
 TEST(Fill, FileisEmpty_ExpextedReturningNULL) {
