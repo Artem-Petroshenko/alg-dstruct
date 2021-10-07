@@ -10,6 +10,7 @@ TEST(ElementCreate, ElementCreated_ExpectedEqualityofData) {
 	new_element.data.Key = 1;
 	new_element.next = NULL;
 	Node_t* element2 = ElementCreate("test", 1);
+	ASSERT_TRUE(element2 != NULL);
 	EXPECT_TRUE(!strcmp(new_element.data.Word, element2->data.Word));
 	EXPECT_EQ(new_element.data.Key, element2->data.Key);
 	EXPECT_EQ(new_element.next, element2->next);
@@ -19,7 +20,8 @@ TEST(ElementCreate, ElementCreated_ExpectedEqualityofData) {
 
 TEST(ListCreate, ListCreated_ExpectedListHeadnotNULLanditsDataisRight) {
 	List_t* test_list = ListCreate("head", 1);
-	EXPECT_TRUE(test_list->head != NULL);
+	ASSERT_TRUE(test_list != NULL);
+	ASSERT_TRUE(test_list->head != NULL);
 	EXPECT_TRUE(!strcmp(test_list->head->data.Word, "head"));
 	EXPECT_EQ(test_list->head->data.Key, 1);
 	ListDestroy(test_list);
@@ -130,6 +132,7 @@ TEST(Add, AddingElement_ExpectedAddingElementtotheRightPlace) {
 TEST(Fill, FillingList_ExpextedRightFilling) {
 	const char* filename = "Test.txt";
 	List_t* test_list = Fill(filename);
+	ASSERT_TRUE(test_list != NULL);
 	EXPECT_TRUE(!strcmp(test_list->head->data.Word, "zero"));
 	EXPECT_EQ(test_list->head->data.Key, 0);
 	EXPECT_TRUE(!strcmp(test_list->head->next->data.Word, "first"));

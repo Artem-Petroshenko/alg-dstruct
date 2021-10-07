@@ -68,6 +68,8 @@ List_t* Fill(const char* filename) {
 	while (fscanf(F, "%s %i", Word, &Key) != EOF)
 	{
 		Node_t* new_element = ElementCreate(Word, Key);
+		if (!new_element)
+			return NULL;
 		if (Add(List, new_element) == Error)
 			ElementDestroy(new_element);
 	}
