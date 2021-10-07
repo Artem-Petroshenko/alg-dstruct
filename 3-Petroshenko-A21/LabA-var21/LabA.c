@@ -69,7 +69,10 @@ List_t* Fill(const char* filename) {
 	{
 		Node_t* new_element = ElementCreate(Word, Key);
 		if (!new_element)
+		{
+			ListDestroy(List);
 			return NULL;
+		}
 		if (Add(List, new_element) == Error)
 			ElementDestroy(new_element);
 	}
