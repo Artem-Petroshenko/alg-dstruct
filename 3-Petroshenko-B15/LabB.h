@@ -1,3 +1,5 @@
+#ifndef __MEMALLOCATOR_H__E71A34CB
+#define __MEMALLOCATOR_H__E71A34CB
 #pragma once
 #include <stdio.h>
 #include <stdlib.h>
@@ -64,4 +66,6 @@ int MemGetBlockSize();
 
 #ifdef __cplusplus
 }
+#endif
+
 #endif
