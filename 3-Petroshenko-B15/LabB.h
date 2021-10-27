@@ -23,6 +23,7 @@ int* GetSizePtr(void* descriptor);
 void** GetNextPtr(void* descriptor);
 void** GetPrevPtr(void* descriptor);
 int* GetFlagPtr(void* descriptor);
+int GetAbs(int x);
 
 // Init memory system with memory block pMemory.
 int MemInit(void* pMemory, int size);
@@ -54,7 +55,7 @@ int MemGetMinimumSize();
 // void *p1 = 0, *p2 = 0;
 // int  memsize = memgetminimumsize() + memgetblocksize() + 2;
 // void *ptr = malloc(memsize);
-// meminit(ptr, memsize())
+// meminit(ptr, memsize);
 // p1 = memalloc(1); // Success!
 // p2 = memalloc(1); // Success!
 // memfree(p2);
