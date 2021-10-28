@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <memory.h>
 #include <math.h>
+#include <string.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -23,7 +24,6 @@ int* GetSizePtr(void* descriptor);
 void** GetNextPtr(void* descriptor);
 void** GetPrevPtr(void* descriptor);
 int* GetFlagPtr(void* descriptor);
-int GetAbs(int x);
 
 // Init memory system with memory block pMemory.
 int MemInit(void* pMemory, int size);
