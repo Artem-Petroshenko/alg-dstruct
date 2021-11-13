@@ -65,14 +65,14 @@ Graph_t* GetGraph(FILE* Stream) {
 		return NULL;
 	//Pointer for getting the strings
 	char* LineBuf = (char*)malloc(MAX_NUM_LENGTH * sizeof(char));
-	//Pointer to iterate over the string 
-	char* BufIterator = NULL;
-	fgets(LineBuf, MAX_NUM_LENGTH, Stream);
 	if (!LineBuf)
 	{
 		free(OurGraph);
 		return NULL;
 	}
+	//Pointer to iterate over the string 
+	char* BufIterator = NULL;
+	fgets(LineBuf, MAX_NUM_LENGTH, Stream);
 	OurGraph->VertsCount = atoi(LineBuf);
 	if (!OurGraph->VertsCount)
 	{
@@ -130,8 +130,9 @@ Graph_t* GetGraph(FILE* Stream) {
 			{
 				if (tmp1)
 					free(tmp1);
+				if (tmp2)
+					free(tmp2);
 				FreeGraph(OurGraph);
-				free(BufIterator);
 				free(LineBuf);
 				return NULL;
 			}
@@ -147,6 +148,8 @@ Graph_t* GetGraph(FILE* Stream) {
 
 Queue_t* InitQueue(void) {
 	Queue_t* Q = (Queue_t*)malloc(sizeof(Queue_t));
+	if (!Q)
+		return NULL;
 	Q->back = NULL;
 	Q->front = NULL;
 	return Q;
@@ -158,6 +161,11 @@ int isEmpty(Queue_t* Queue) {
 
 void Push(Queue_t* Queue, int vertex) {
 	Node_t* Element = (Node_t*)malloc(sizeof(Node_t));
+	if (!Element)
+	{
+		fprintf(stderr, "Can't Push NULL element\n");
+		return;
+	}
 	Element->vertex = vertex;
 	Element->next = NULL;
 	if (isEmpty(Queue))
@@ -225,6 +233,8 @@ int BFS(FILE* Stream, Graph_t* Graph) {
 
 int main() {
 	Graph_t* Graph = GetGraph(stdin);
+	if (!Graph)
+		return 1;
 	BFS(stdout, Graph);
 	return 0;
 }

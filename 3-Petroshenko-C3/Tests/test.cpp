@@ -14,14 +14,14 @@ PC configuration:
 /*
 Lab C, Variant 3 (breadth-first traversal with list of contiguous vertices):
 Results:
-    Graph creation time: 10114 ms
-    Traversal of the graph time: 20334 ms
-    Total run time: 30454 ms
-    Memory Costs: About 222 MB
+    Graph creation time: 22844 ms
+    Traversal of the graph time: 47149 ms
+    Total run time: 69996 ms
+    Memory Costs: About 450 MB
 */
 
 const char* Filename = "StressTest.txt";
-const int VerticesCount = 650000;
+const int VerticesCount = 1000000;
 
 TEST(BFS_StressTest, GraphCreation) {
     FILE* F = fopen(Filename, "w");
