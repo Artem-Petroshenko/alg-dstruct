@@ -196,20 +196,20 @@ int BFS(FILE* Stream, Graph_t* Graph) {
 		return 0;
 	Queue_t* Q = InitQueue();
 	if (!Q)
-	{
-		FreeGraph(Graph);
 		return 0;
-	}
 	int* Used = (int*)malloc(sizeof(int) * Graph->VertsCount);
 	if (!Used)
 	{
-		FreeGraph(Graph);
 		free(Q);
 		return 0;
 	}
 	PushCheck = Push(Q, 0);
 	if (!PushCheck)
+	{
+		free(Q);
+		free(Used);
 		return 0;
+	}
 	Used[0] = YES;
 	while (!isEmpty(Q))
 	{
@@ -221,7 +221,11 @@ int BFS(FILE* Stream, Graph_t* Graph) {
 			{
 				PushCheck = Push(Q, Graph->VertsArray[Front(Q)].ContVerts[i]);
 				if (!PushCheck)
+				{
+					free(Q);
+					free(Used);
 					return 0;
+				}
 				Used[Graph->VertsArray[Front(Q)].ContVerts[i]] = YES;
 			}
 		}
