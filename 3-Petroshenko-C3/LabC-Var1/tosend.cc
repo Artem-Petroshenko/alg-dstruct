@@ -159,13 +159,10 @@ int isEmpty(Queue_t* Queue) {
 	return !Queue->front ? YES : NO;
 }
 
-void Push(Queue_t* Queue, int vertex) {
+int Push(Queue_t* Queue, int vertex) {
 	Node_t* Element = (Node_t*)malloc(sizeof(Node_t));
 	if (!Element)
-	{
-		fprintf(stderr, "Can't Push NULL element\n");
-		return;
-	}
+		return 0;
 	Element->vertex = vertex;
 	Element->next = NULL;
 	if (isEmpty(Queue))
@@ -178,7 +175,7 @@ void Push(Queue_t* Queue, int vertex) {
 		Queue->back->next = Element;
 		Queue->back = Element;
 	}
-	return;
+	return 1;
 }
 
 void Pop(Queue_t* Queue) {
@@ -194,6 +191,7 @@ int Front(Queue_t* Queue) {
 }
 
 int BFS(FILE* Stream, Graph_t* Graph) {
+	int PushCheck;
 	if (!Graph)
 		return 0;
 	Queue_t* Q = InitQueue();
@@ -209,7 +207,9 @@ int BFS(FILE* Stream, Graph_t* Graph) {
 		free(Q);
 		return 0;
 	}
-	Push(Q, 0);
+	PushCheck = Push(Q, 0);
+	if (!PushCheck)
+		return 0;
 	Used[0] = YES;
 	while (!isEmpty(Q))
 	{
@@ -219,13 +219,14 @@ int BFS(FILE* Stream, Graph_t* Graph) {
 		{
 			if (Used[Graph->VertsArray[Front(Q)].ContVerts[i]] != YES)
 			{
-				Push(Q, Graph->VertsArray[Front(Q)].ContVerts[i]);
+				PushCheck = Push(Q, Graph->VertsArray[Front(Q)].ContVerts[i]);
+				if (!PushCheck)
+					return 0;
 				Used[Graph->VertsArray[Front(Q)].ContVerts[i]] = YES;
 			}
 		}
 		Pop(Q);
 	}
-	FreeGraph(Graph);
 	free(Q);
 	free(Used);
 	return 1;
@@ -236,5 +237,6 @@ int main() {
 	if (!Graph)
 		return 1;
 	BFS(stdout, Graph);
+	FreeGraph(Graph);
 	return 0;
 }

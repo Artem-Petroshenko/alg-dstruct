@@ -45,7 +45,7 @@ void FreeGraph(Graph_t* Graph);
 int BFS(FILE* Stream, Graph_t* Graph);
 Queue_t* InitQueue(void);
 int isEmpty(Queue_t* Queue);
-void Push(Queue_t* Queue, int vertex);
+int Push(Queue_t* Queue, int vertex);
 void Pop(Queue_t* Queue);
 int Front(Queue_t* Queue);
 

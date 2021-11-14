@@ -69,5 +69,6 @@ TEST(BFS_StressTest, GraphTraversal) {
         FreeGraph(Graph);
         ASSERT_TRUE(Result);
     }
+    FreeGraph(Graph);
     fclose(Output);
 }
