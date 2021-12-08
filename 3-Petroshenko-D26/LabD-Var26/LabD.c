@@ -230,6 +230,8 @@ bool Calculate(Stack_t* S, int operation) {
 		break;
 	case '/':
 		B = Top(S);
+		if (!B) // we can't divide by zero
+			return false;
 		Pop(S);
 		A = Top(S);
 		Pop(S);
@@ -242,29 +244,29 @@ bool Calculate(Stack_t* S, int operation) {
 }
 
 //realisation of enumeration
-void Perebor(int B, int* Nums, int* Ops, int sizeNums, int sizeOps, int m, int* Flag, const char* Filename) {
-	if (*Flag)
-		return;
+int Perebor(const int B, int* Nums, int* Ops, int sizeNums, int sizeOps, int m, const char* Filename) {
 	if (m >= sizeOps)
 	{
-		if (B == *RPN(Nums, Ops, sizeNums, sizeOps))
-		{
-			FILE* F = fopen(Filename, "a");
-			if (!F)
-				return;
-			fputs(GetExp(Nums, Ops, sizeNums, sizeOps), F);
-			fprintf(F, "\n");
-			fclose(F);
-			*Flag = 1;
-		}
+		if(RPN(Nums, Ops, sizeNums, sizeOps))
+			if (B == *RPN(Nums, Ops, sizeNums, sizeOps))
+			{
+				FILE* F = fopen(Filename, "a");
+				if (!F)
+					return 0;
+				fputs(GetExp(Nums, Ops, sizeNums, sizeOps), F);
+				fprintf(F, "\n");
+				fclose(F);
+				return 1;
+			}
 	}
 	else
 		for (int j = 0; j < 5; j++)
 		{
 			Ops[m] = j;
-			Perebor(B, Nums, Ops, sizeNums, sizeOps, m + 1, Flag, Filename);
+			if (Perebor(B, Nums, Ops, sizeNums, sizeOps, m + 1, Filename))
+				return 1;
 		}
-	return;
+	return 0;
 }
 
 //Function gets expression string
@@ -307,4 +309,32 @@ char* GetExp(int* Nums, int* Ops, int sizeNums, int sizeOps) {
 	}
 	String[Len - 1] = '\0';
 	return String;
+}
+
+int Algorythm(const int A, const int B, const char* fileoutput) {
+	int size = NumLen(A);
+	int* Nums = NumtoMass(A);
+	if (!Nums)
+		return -1;
+	int* Ops = ZeroMass(size - 1);
+	if (!Ops)
+	{
+		free(Nums);
+		return -1;
+	}
+	if (!Perebor(B, Nums, Ops, size, size - 1, 0, fileoutput))
+	{
+		FILE* F = fopen(fileoutput, "a");
+		if (!F)
+		{
+			free(Nums);
+			free(Ops);
+			return -1;
+		}
+		fprintf(F, "0\n");
+		fclose(F);
+	}
+	free(Nums);
+	free(Ops);
+	return 0;
 }
