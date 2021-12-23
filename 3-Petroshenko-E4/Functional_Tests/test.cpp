@@ -4,7 +4,7 @@
 TEST(OneNodeTree, ExpectRightFill) {
 	tree_t* Node = TreeInit();
 	if (!Node)
-		ASSERT_TRUE(!Node);
+		ASSERT_TRUE(Node);
 	Node->String = "asdfer";
 	FillWidth(Node);
 	EXPECT_EQ(Node->SubTree, 6);
@@ -14,11 +14,11 @@ TEST(OneNodeTree, ExpectRightFill) {
 TEST(TwoNodeLeftTree, ExpectRightFill) {
 	tree_t* Node1 = TreeInit();
 	if (!Node1)
-		ASSERT_TRUE(!Node1);
+		ASSERT_TRUE(Node1);
 	tree_t* Node2 = TreeInit();
 	if (!Node2) {
 		free(Node1);
-		ASSERT_TRUE(!Node2);
+		ASSERT_TRUE(Node2);
 	}
 	Node1->String = "primary";
 	Node2->String = "left";
@@ -32,11 +32,11 @@ TEST(TwoNodeLeftTree, ExpectRightFill) {
 TEST(TwoNodeRightTree, ExpectRightFill) {
 	tree_t* Node1 = TreeInit();
 	if (!Node1)
-		ASSERT_TRUE(!Node1);
+		ASSERT_TRUE(Node1);
 	tree_t* Node2 = TreeInit();
 	if (!Node2) {
 		free(Node1);
-		ASSERT_TRUE(!Node2);
+		ASSERT_TRUE(Node2);
 	}
 	Node1->String = "primary";
 	Node2->String = "right";
@@ -50,17 +50,17 @@ TEST(TwoNodeRightTree, ExpectRightFill) {
 TEST(TwoLevelFullTree, ExpectRightFill) {
 	tree_t* Node1 = TreeInit();
 	if (!Node1)
-		ASSERT_TRUE(!Node1);
+		ASSERT_TRUE(Node1);
 	tree_t* Node2 = TreeInit();
 	if (!Node2) {
 		free(Node1);
-		ASSERT_TRUE(!Node2);
+		ASSERT_TRUE(Node2);
 	}
 	tree_t* Node3 = TreeInit();
 	if (!Node3) {
 		free(Node1);
 		free(Node2);
-		ASSERT_TRUE(!Node3);
+		ASSERT_TRUE(Node3);
 	}
 	Node1->String = "primary";
 	Node2->String = "left";
