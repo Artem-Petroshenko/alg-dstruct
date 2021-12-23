@@ -1,20 +1,22 @@
 #include "LabD.h"
 
+#include "LabD.h"
+
 //getting numbers from the file
-bool Input(const char* Filename, int* A, int* B) {
+bool Input(const char* Filename, long long* A, long long* B) {
 	FILE* F = fopen(Filename, "r");
 	if (!F)
 		return false;
-	fscanf(F, "%i", A);
-	fscanf(F, "%i", B);
+	fscanf(F, "%lli", A);
+	fscanf(F, "%lli", B);
 	fclose(F);
 	return true;
 }
 
 //Calculating number of digits to get the size for massive(look next func)
-int NumLen(int A) {
+int NumLen(long long A) {
 	int i = 0;
-	int tmp = A;
+	long long tmp = A;
 	while (tmp)
 	{
 		i++;
@@ -24,11 +26,11 @@ int NumLen(int A) {
 }
 
 //Transformation of a number to a massive of it's digits 
-int* NumtoMass(int A) {
+int* NumtoMass(long long A) {
 	int* Mass = (int*)malloc(sizeof(int) * NumLen(A));
 	if (!Mass)
 		return NULL;
-	int tmp = A;
+	long long tmp = A;
 	int i = 1;
 	while (tmp)
 	{
@@ -40,26 +42,68 @@ int* NumtoMass(int A) {
 }
 
 //Creation of massive filled with 0
-int* ZeroMass(int size) {
-	int* Mass = (int*)malloc(sizeof(int) * size);
+int* ZeroMass(int Size) {
+	int* Mass = (int*)malloc(sizeof(int) * Size);
 	if (!Mass)
 		return NULL;
-	for (int i = 0; i < size; i++)
+	for (int i = 0; i < Size; i++)
 		Mass[i] = 0;
 	return Mass;
 }
 
 //calculation of expression length
-int ExpLen(int* Nums, int* Ops, int sizeNums, int sizeOps) {
-	int Len = sizeNums;
-	for (int i = 0; i < sizeOps; i++)
+int ExpLen(int* Nums, int* Ops, int SizeNums, int SizeOps) {
+	int Len = SizeNums;
+	for (int i = 0; i < SizeOps; i++)
 		if (Ops[i])
 			Len++;
 	return Len;
 }
 
+//Function gets expression string
+char* GetExp(int* Nums, int* Ops, int SizeNums, int SizeOps) {
+	int Len = ExpLen(Nums, Ops, SizeNums, SizeOps) + 1;
+	char* String = (char*)malloc(sizeof(char) * Len);
+	if (!String)
+		return NULL;
+	String[0] = Nums[0] + '0';
+	int j = 0;
+	for (int i = 1; i <= SizeOps; i++)
+	{
+		j++;
+		switch (Ops[i - 1])
+		{
+		case 0:
+			String[j] = Nums[i] + '0';
+			break;
+		case 1:
+			String[j] = '+';
+			j++;
+			String[j] = Nums[i] + '0';
+			break;
+		case 2:
+			String[j] = '-';
+			j++;
+			String[j] = Nums[i] + '0';
+			break;
+		case 3:
+			String[j] = '*';
+			j++;
+			String[j] = Nums[i] + '0';
+			break;
+		case 4:
+			String[j] = '/';
+			j++;
+			String[j] = Nums[i] + '0';
+			break;
+		}
+	}
+	String[Len - 1] = '\0';
+	return String;
+}
+
 //Check if symbol is digit
-bool isDigit(char ch) {
+bool IsDigit(char ch) {
 	return ch >= '0' && ch <= '9';
 }
 
@@ -73,12 +117,12 @@ Stack_t* StackInit(void) {
 }
 
 //Check if stack is empty
-bool isEmpty(Stack_t* S) {
+bool IsEmpty(Stack_t* S) {
 	return !S->Top;
 }
 
 //Pushing new element to stack
-bool Push(Stack_t* S, int Num) {
+bool Push(Stack_t* S, long long Num) {
 	Node_t* Element = (Node_t*)malloc(sizeof(Node_t));
 	if (!Element)
 		return false;
@@ -90,7 +134,7 @@ bool Push(Stack_t* S, int Num) {
 
 //poping an element from top of the stack
 bool Pop(Stack_t* S) {
-	if (isEmpty(S))
+	if (IsEmpty(S))
 		return false;
 	else
 	{
@@ -102,36 +146,36 @@ bool Pop(Stack_t* S) {
 }
 
 //getting the value of the top of the stack
-int Top(Stack_t* S) {
+long long Top(Stack_t* S) {
 	return S->Top->Data;
 }
 
 //Function transforms regular expression into reverse polish notation and calculates gets it's result
-int* RPN(int* Nums, int* Ops, int sizeNums, int sizeOps) {
+long long RPN(int* Nums, int* Ops, int SizeNums, int SizeOps) {
 	Stack_t* Result = StackInit();
 	if (!Result)
-		return NULL;
+		return LLONG_MIN;
 	Stack_t* Opers = StackInit();
 	if (!Opers)
 	{
 		free(Result);
-		return NULL;
+		return LLONG_MIN;
 	}
-	char* Expression = GetExp(Nums, Ops, sizeNums, sizeOps);
+	char* Expression = GetExp(Nums, Ops, SizeNums, SizeOps);
 	if (!Expression)
 	{
 		free(Result);
 		free(Opers);
-		return NULL;
+		return LLONG_MIN;
 	}
 	char* ptr = Expression;
 	while (*ptr != '\0')
 	{
-		if (isDigit(*ptr))
+		if (IsDigit(*ptr))
 		{
 
-			int Num = 0;
-			while (isDigit(*ptr))
+			long long Num = 0;
+			while (IsDigit(*ptr))
 			{
 				Num = Num * 10 + (*ptr - '0');
 				ptr++;
@@ -141,34 +185,34 @@ int* RPN(int* Nums, int* Ops, int sizeNums, int sizeOps) {
 				free(Result);
 				free(Opers);
 				free(Expression);
-				return NULL;
+				return LLONG_MIN;
 			}
 		}
 		else
 		{
-			if (!isEmpty(Opers))
+			if (!IsEmpty(Opers))
 			{
 				if (*ptr == '+' || *ptr == '-')
-					while (!isEmpty(Opers))
+					while (!IsEmpty(Opers))
 					{
 						if (!Calculate(Result, Top(Opers)))
 						{
 							free(Result);
 							free(Opers);
 							free(Expression);
-							return NULL;
+							return LLONG_MIN;
 						}
 						Pop(Opers);
 					}
 				else
-					while (!isEmpty(Opers) && (Top(Opers) == '*' || Top(Opers) == '/'))
+					while (!IsEmpty(Opers) && (Top(Opers) == '*' || Top(Opers) == '/'))
 					{
 						if (!Calculate(Result, Top(Opers)))
 						{
 							free(Result);
 							free(Opers);
 							free(Expression);
-							return NULL;
+							return LLONG_MIN;
 						}
 						Pop(Opers);
 					}
@@ -178,34 +222,34 @@ int* RPN(int* Nums, int* Ops, int sizeNums, int sizeOps) {
 				free(Result);
 				free(Opers);
 				free(Expression);
-				return NULL;
+				return LLONG_MIN;
 			}
 			ptr++;
 		}
 	}
-	while (!isEmpty(Opers))
+	while (!IsEmpty(Opers))
 	{
 		if (!Calculate(Result, Top(Opers)))
 		{
 			free(Result);
 			free(Opers);
 			free(Expression);
-			return NULL;
+			return LLONG_MIN;
 		}
 		Pop(Opers);
 	}
-	int ExpRes = Top(Result);
+	long long ExpRes = Top(Result);
 	Pop(Result);
 	free(Result);
 	free(Opers);
 	free(Expression);
-	return &ExpRes;
+	return ExpRes;
 }
 
 //Function for calculation of one operation
-bool Calculate(Stack_t* S, int operation) {
-	int Res = 0, A, B;
-	switch (operation)
+bool Calculate(Stack_t* S, int Operation) {
+	long long Res, A, B;
+	switch (Operation)
 	{
 	case '+':
 		B = Top(S);
@@ -244,16 +288,17 @@ bool Calculate(Stack_t* S, int operation) {
 }
 
 //realisation of enumeration
-int Perebor(const int B, int* Nums, int* Ops, int sizeNums, int sizeOps, int m, const char* Filename) {
-	if (m >= sizeOps)
+int Enumeration(long long B, int* Nums, int* Ops, int SizeNums, int SizeOps, int m, const char* Filename) {
+	if (m >= SizeOps)
 	{
-		if(RPN(Nums, Ops, sizeNums, sizeOps))
-			if (B == *RPN(Nums, Ops, sizeNums, sizeOps))
+		long long tmp = RPN(Nums, Ops, SizeNums, SizeOps);
+		if (tmp != LLONG_MIN)
+			if (B == tmp)
 			{
-				FILE* F = fopen(Filename, "a");
+				FILE* F = fopen(Filename, "w");
 				if (!F)
 					return 0;
-				fputs(GetExp(Nums, Ops, sizeNums, sizeOps), F);
+				fputs(GetExp(Nums, Ops, SizeNums, SizeOps), F);
 				fprintf(F, "\n");
 				fclose(F);
 				return 1;
@@ -263,76 +308,39 @@ int Perebor(const int B, int* Nums, int* Ops, int sizeNums, int sizeOps, int m, 
 		for (int j = 0; j < 5; j++)
 		{
 			Ops[m] = j;
-			if (Perebor(B, Nums, Ops, sizeNums, sizeOps, m + 1, Filename))
+			if (Enumeration(B, Nums, Ops, SizeNums, SizeOps, m + 1, Filename))
 				return 1;
 		}
 	return 0;
 }
 
-//Function gets expression string
-char* GetExp(int* Nums, int* Ops, int sizeNums, int sizeOps) {
-	int Len = ExpLen(Nums, Ops, sizeNums, sizeOps) + 1;
-	char* String = (char*)malloc(sizeof(char) * Len);
-	if (!String)
-		return NULL;
-	String[0] = Nums[0] + '0';
-	int j = 0;
-	for (int i = 1; i <= sizeOps; i++)
-	{
-		j++;
-		switch (Ops[i - 1])
-		{
-		case 0:
-			String[j] = Nums[i] + '0';
-			break;
-		case 1:
-			String[j] = '+';
-			j++;
-			String[j] = Nums[i] + '0';
-			break;
-		case 2:
-			String[j] = '-';
-			j++;
-			String[j] = Nums[i] + '0';
-			break;
-		case 3:
-			String[j] = '*';
-			j++;
-			String[j] = Nums[i] + '0';
-			break;
-		case 4:
-			String[j] = '/';
-			j++;
-			String[j] = Nums[i] + '0';
-			break;
-		}
-	}
-	String[Len - 1] = '\0';
-	return String;
-}
-
-int Algorythm(const int A, const int B, const char* fileoutput) {
-	int size = NumLen(A);
+int Algorythm(const char* FileInput, const char* FileOutput) {
+	long long A, B;
+	FILE* FInput = fopen(FileInput, "r");
+	if (!FInput)
+		return -1;
+	Input(FileInput, &A, &B);
+	int Size = NumLen(A);
 	int* Nums = NumtoMass(A);
 	if (!Nums)
 		return -1;
-	int* Ops = ZeroMass(size - 1);
+	int* Ops = ZeroMass(Size - 1);
 	if (!Ops)
 	{
 		free(Nums);
 		return -1;
 	}
-	if (!Perebor(B, Nums, Ops, size, size - 1, 0, fileoutput))
+	if (!Enumeration(B, Nums, Ops, Size, Size - 1, 0, FileOutput))
 	{
-		FILE* F = fopen(fileoutput, "a");
-		if (!F)
+		FILE* FOutput = fopen(FileOutput, "w");
+		if (!FOutput)
 		{
 			free(Nums);
 			free(Ops);
 			return -1;
 		}
-		fprintf(F, "0\n");
-		fclose(F);
+		fprintf(FOutput, "0\n");
+		fclose(FOutput);
 	}
 	free(Nums);
 	free(Ops);
