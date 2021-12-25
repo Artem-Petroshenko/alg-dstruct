@@ -73,3 +73,63 @@ TEST(TwoLevelFullTree, ExpectRightFill) {
 	EXPECT_EQ(Node3->SubTree, 5);
 	TreeDestroy(Node1);
 }
+
+TEST(TwoLevelFullTreeWithIncorrectWidth, ExpectCorrectingWidth) {
+	tree_t* Node1 = TreeInit();
+	if (!Node1)
+		ASSERT_TRUE(Node1);
+	tree_t* Node2 = TreeInit();
+	if (!Node2) {
+		free(Node1);
+		ASSERT_TRUE(Node2);
+	}
+	tree_t* Node3 = TreeInit();
+	if (!Node3) {
+		free(Node1);
+		free(Node2);
+		ASSERT_TRUE(Node3);
+	}
+	Node1->String = "primary";
+	Node1->SubTree = 1;
+	Node2->String = "left";
+	Node2->SubTree = 1;
+	Node3->String = "right";
+	Node3->SubTree = 1;
+	Node1->Left = Node2;
+	Node1->Right = Node3;
+	FillWidth(Node1);
+	EXPECT_EQ(Node1->SubTree, 16);
+	EXPECT_EQ(Node2->SubTree, 4);
+	EXPECT_EQ(Node3->SubTree, 5);
+	TreeDestroy(Node1);
+}
+
+TEST(TwoLevelFullTreeWithCorrectWidth, ExpectNoChanges) {
+	tree_t* Node1 = TreeInit();
+	if (!Node1)
+		ASSERT_TRUE(Node1);
+	tree_t* Node2 = TreeInit();
+	if (!Node2) {
+		free(Node1);
+		ASSERT_TRUE(Node2);
+	}
+	tree_t* Node3 = TreeInit();
+	if (!Node3) {
+		free(Node1);
+		free(Node2);
+		ASSERT_TRUE(Node3);
+	}
+	Node1->String = "primary";
+	Node1->SubTree = 16;
+	Node2->String = "left";
+	Node2->SubTree = 4;
+	Node3->String = "right";
+	Node3->SubTree = 5;
+	Node1->Left = Node2;
+	Node1->Right = Node3;
+	FillWidth(Node1);
+	EXPECT_EQ(Node1->SubTree, 16);
+	EXPECT_EQ(Node2->SubTree, 4);
+	EXPECT_EQ(Node3->SubTree, 5);
+	TreeDestroy(Node1);
+}

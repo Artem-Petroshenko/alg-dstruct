@@ -19,7 +19,6 @@ typedef struct tree_t {
 	struct tree_t* Right;
 } tree_t;
 
-int IntLen(int Number);
 tree_t* TreeInit(void);
 void TreeDestroy(tree_t* Root);
 int FillWidth(tree_t* Root);

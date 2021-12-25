@@ -1,14 +1,5 @@
 #include "LabE.h"
 
-int IntLen(int Number) {
-	int i = 0;
-	while (Number) {
-		i++;
-		Number /= 10;
-	}
-	return i;
-}
-
 tree_t* TreeInit(void) {
 	tree_t* Tree = (tree_t*)malloc(sizeof(tree_t));
 	if (!Tree)
