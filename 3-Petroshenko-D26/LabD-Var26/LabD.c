@@ -1,7 +1,5 @@
 #include "LabD.h"
 
-#include "LabD.h"
-
 //getting numbers from the file
 bool Input(const char* Filename, long long* A, long long* B) {
 	FILE* F = fopen(Filename, "r");
@@ -26,29 +24,29 @@ int NumLen(long long A) {
 }
 
 //Transformation of a number to a massive of it's digits 
-int* NumtoMass(long long A) {
-	int* Mass = (int*)malloc(sizeof(int) * NumLen(A));
-	if (!Mass)
+int* NumtoArray(long long A) {
+	int* Array = (int*)malloc(sizeof(int) * NumLen(A));
+	if (!Array)
 		return NULL;
 	long long tmp = A;
 	int i = 1;
 	while (tmp)
 	{
-		Mass[NumLen(A) - i] = tmp % 10;
+		Array[NumLen(A) - i] = tmp % 10;
 		tmp /= 10;
 		i++;
 	}
-	return Mass;
+	return Array;
 }
 
 //Creation of massive filled with 0
-int* ZeroMass(int Size) {
-	int* Mass = (int*)malloc(sizeof(int) * Size);
-	if (!Mass)
+int* ZeroArray(int Size) {
+	int* Array = (int*)malloc(sizeof(int) * Size);
+	if (!Array)
 		return NULL;
 	for (int i = 0; i < Size; i++)
-		Mass[i] = 0;
-	return Mass;
+		Array[i] = 0;
+	return Array;
 }
 
 //calculation of expression length
@@ -298,11 +296,18 @@ int Enumeration(long long B, int* Nums, int* Ops, int SizeNums, int SizeOps, int
 				FILE* F = fopen(Filename, "w");
 				if (!F)
 					return 0;
-				fputs(GetExp(Nums, Ops, SizeNums, SizeOps), F);
+				char* tmp = GetExp(Nums, Ops, SizeNums, SizeOps);
+				if (!tmp) {
+					fclose(F);
+					return 0;
+				}
+				fputs(tmp, F);
 				fprintf(F, "\n");
+				free(tmp);
 				fclose(F);
 				return 1;
 			}
+		return 0;
 	}
 	else
 		for (int j = 0; j < 5; j++)
@@ -314,17 +319,17 @@ int Enumeration(long long B, int* Nums, int* Ops, int SizeNums, int SizeOps, int
 	return 0;
 }
 
-int Algorythm(const char* FileInput, const char* FileOutput) {
+int Algorithm(const char* FileInput, const char* FileOutput) {
 	long long A, B;
 	FILE* FInput = fopen(FileInput, "r");
 	if (!FInput)
 		return -1;
 	Input(FileInput, &A, &B);
 	int Size = NumLen(A);
-	int* Nums = NumtoMass(A);
+	int* Nums = NumtoArray(A);
 	if (!Nums)
 		return -1;
-	int* Ops = ZeroMass(Size - 1);
+	int* Ops = ZeroArray(Size - 1);
 	if (!Ops)
 	{
 		free(Nums);

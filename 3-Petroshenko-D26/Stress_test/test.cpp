@@ -22,5 +22,5 @@ Results:
 TEST(Stress_Test, Full_algorythm) {
 	const char* Input = "stress_test_input.txt";
 	const char* Output = "stress_test_output.txt";
-	Algorythm(Input, Output);
+	Algorithm(Input, Output);
 }

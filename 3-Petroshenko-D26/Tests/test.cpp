@@ -6,13 +6,13 @@
 
 //Functional tests
 TEST(MinAMinB, Expect_printing_1_in_file) {
-	const char* input = "test_files/MinAMinB/input.txt";
-	const char* output = "test_files/MinAMinB/output.txt";
-	Algorythm(input, output);
+	const char* Input = "test_files/MinAMinB/input.txt";
+	const char* Output = "test_files/MinAMinB/output.txt";
+	Algorithm(Input, Output);
 	char* String = (char*)malloc(MAX_SIZE * sizeof(char));
 	if (!String)
 		ASSERT_TRUE(String);
-	FILE* F = fopen(output, "r");
+	FILE* F = fopen(Output, "r");
 	if (!F)
 	{
 		free(String);
@@ -25,13 +25,13 @@ TEST(MinAMinB, Expect_printing_1_in_file) {
 }
 
 TEST(SomeASomeB_1, Expect_printing_389_273_in_file) {
-	const char* input = "test_files/SomeASomeB_1/input.txt";
-	const char* output = "test_files/SomeASomeB_1/output.txt";
-	Algorythm(input, output);
+	const char* Input = "test_files/SomeASomeB_1/input.txt";
+	const char* Output = "test_files/SomeASomeB_1/output.txt";
+	Algorithm(Input, Output);
 	char* String = (char*)malloc(MAX_SIZE * sizeof(char));
 	if (!String)
 		ASSERT_TRUE(String);
-	FILE* F = fopen(output, "r");
+	FILE* F = fopen(Output, "r");
 	if (!F)
 	{
 		free(String);
@@ -44,13 +44,13 @@ TEST(SomeASomeB_1, Expect_printing_389_273_in_file) {
 }
 
 TEST(SomeASomeB_2, Expect_printing_0_in_file) {
-	const char* input = "test_files/SomeASomeB_2/input.txt";
-	const char* output = "test_files/SomeASomeB_2/output.txt";
-	Algorythm(input, output);
+	const char* Input = "test_files/SomeASomeB_2/input.txt";
+	const char* Output = "test_files/SomeASomeB_2/output.txt";
+	Algorithm(Input, Output);
 	char* String = (char*)malloc(MAX_SIZE * sizeof(char));
 	if (!String)
 		ASSERT_TRUE(String);
-	FILE* F = fopen(output, "r");
+	FILE* F = fopen(Output, "r");
 	if (!F)
 	{
 		free(String);
@@ -63,13 +63,13 @@ TEST(SomeASomeB_2, Expect_printing_0_in_file) {
 }
 
 TEST(SomeASomeB_3, Expect_printing_23_34_566_in_file) {
-	const char* input = "test_files/SomeASomeB_3/input.txt";
-	const char* output = "test_files/SomeASomeB_3/output.txt";
-	Algorythm(input, output);
+	const char* Input = "test_files/SomeASomeB_3/input.txt";
+	const char* Output = "test_files/SomeASomeB_3/output.txt";
+	Algorithm(Input, Output);
 	char* String = (char*)malloc(MAX_SIZE * sizeof(char));
 	if (!String)
 		ASSERT_TRUE(String);
-	FILE* F = fopen(output, "r");
+	FILE* F = fopen(Output, "r");
 	if (!F)
 	{
 		free(String);
@@ -82,13 +82,13 @@ TEST(SomeASomeB_3, Expect_printing_23_34_566_in_file) {
 }
 
 TEST(SomeASomeB_4, Expect_printing_0_in_file) {
-	const char* input = "test_files/SomeASomeB_4/input.txt";
-	const char* output = "test_files/SomeASomeB_4/output.txt";
-	Algorythm(input, output);
+	const char* Input = "test_files/SomeASomeB_4/input.txt";
+	const char* Output = "test_files/SomeASomeB_4/output.txt";
+	Algorithm(Input, Output);
 	char* String = (char*)malloc(MAX_SIZE * sizeof(char));
 	if (!String)
 		ASSERT_TRUE(String);
-	FILE* F = fopen(output, "r");
+	FILE* F = fopen(Output, "r");
 	if (!F)
 	{
 		free(String);
@@ -101,13 +101,13 @@ TEST(SomeASomeB_4, Expect_printing_0_in_file) {
 }
 
 TEST(SomeASomeB_5, Expect_printing_111_1_1_2_in_file) {
-	const char* input = "test_files/SomeASomeB_5/input.txt";
-	const char* output = "test_files/SomeASomeB_5/output.txt";
-	Algorythm(input, output);
+	const char* Input = "test_files/SomeASomeB_5/input.txt";
+	const char* Output = "test_files/SomeASomeB_5/output.txt";
+	Algorithm(Input, Output);
 	char* String = (char*)malloc(MAX_SIZE * sizeof(char));
 	if (!String)
 		ASSERT_TRUE(String);
-	FILE* F = fopen(output, "r");
+	FILE* F = fopen(Output, "r");
 	if (!F)
 	{
 		free(String);
@@ -120,13 +120,13 @@ TEST(SomeASomeB_5, Expect_printing_111_1_1_2_in_file) {
 }
 
 TEST(SomeASomeB_6, Expect_printing_1_2_3_in_file) {
-	const char* input = "test_files/SomeASomeB_6/input.txt";
-	const char* output = "test_files/SomeASomeB_6/output.txt";
-	Algorythm(input, output);
+	const char* Input = "test_files/SomeASomeB_6/input.txt";
+	const char* Output = "test_files/SomeASomeB_6/output.txt";
+	Algorithm(Input, Output);
 	char* String = (char*)malloc(MAX_SIZE * sizeof(char));
 	if (!String)
 		ASSERT_TRUE(String);
-	FILE* F = fopen(output, "r");
+	FILE* F = fopen(Output, "r");
 	if (!F)
 	{
 		free(String);
@@ -139,13 +139,13 @@ TEST(SomeASomeB_6, Expect_printing_1_2_3_in_file) {
 }
 
 TEST(SomeASomeB_7, Expect_printing_1_00_in_file) {
-	const char* input = "test_files/SomeASomeB_7/input.txt";
-	const char* output = "test_files/SomeASomeB_7/output.txt";
-	Algorythm(input, output);
+	const char* Input = "test_files/SomeASomeB_7/input.txt";
+	const char* Output = "test_files/SomeASomeB_7/output.txt";
+	Algorithm(Input, Output);
 	char* String = (char*)malloc(MAX_SIZE * sizeof(char));
 	if (!String)
 		ASSERT_TRUE(String);
-	FILE* F = fopen(output, "r");
+	FILE* F = fopen(Output, "r");
 	if (!F)
 	{
 		free(String);
@@ -158,13 +158,13 @@ TEST(SomeASomeB_7, Expect_printing_1_00_in_file) {
 }
 
 TEST(BigABigB, Expect_printing_9999999999999_9_in_file) {
-	const char* input = "test_files/BigABigB/input.txt";
-	const char* output = "test_files/BigABigB/output.txt";
-	Algorythm(input, output);
+	const char* Input = "test_files/BigABigB/input.txt";
+	const char* Output = "test_files/BigABigB/output.txt";
+	Algorithm(Input, Output);
 	char* String = (char*)malloc(MAX_SIZE * sizeof(char));
 	if (!String)
 		ASSERT_TRUE(String);
-	FILE* F = fopen(output, "r");
+	FILE* F = fopen(Output, "r");
 	if (!F)
 	{
 		free(String);

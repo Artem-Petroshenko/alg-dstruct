@@ -23,13 +23,13 @@ typedef struct {
 
 bool Input(const char* Filename, long long* A, long long* B);
 int NumLen(long long A);
-int* ZeroMass(int Size);
-int* NumtoMass(long long A);
+int* ZeroArray(int Size);
+int* NumtoArray(long long A);
 char* GetExp(int* Nums, int* Ops, int SizeNums, int SizeOps);
 int Enumeration(long long B, int* Nums, int* Ops, int SizeNums, int SizeOps, int m, const char* Filename);
 long long RPN(int* Nums, int* Ops, int SizeNums, int SizeOps);
 bool Calculate(Stack_t* S, int Operation);
-int Algorythm(const char* FileInput, const char* FileOutput);
+int Algorithm(const char* FileInput, const char* FileOutput);
 
 #ifdef __cplusplus
 }
