@@ -49,31 +49,3 @@ void TreePrint(tree_t* Tree, int n, FILE* Stream) {
 		TreePrint(Tree->Left, n + 2, Stream);
 	}
 }
-
-//Possibly needed function
-int CompareFilesTest(tree_t* Root, char* ExpectedFile, char* ResultFile) {
-	char ExpectedSymbol, ResultSymbol;
-	FILE* Result = fopen(ResultFile, "w");
-	if (!Result)
-		return -1;
-	TreePrint(Root, 0, Result);
-	fclose(Result);
-	FILE* Expect = fopen(ExpectedFile, "r");
-	if (!Expect)
-		return -1;
-	Result = fopen(ResultFile, "r");
-	if (!Result) {
-		fclose(Expect);
-		return -1;
-	}
-	while (fscanf(Expect, "%c", &ExpectedSymbol) != EOF && fscanf(Result, "%c", &ResultSymbol) != EOF) {
-		if (ExpectedSymbol != ResultSymbol) {
-			fclose(Expect);
-			fclose(Result);
-			return 0;
-		}
-	}
-	fclose(Expect);
-	fclose(Result);
-	return 1;
-}

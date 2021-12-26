@@ -23,7 +23,6 @@ tree_t* TreeInit(void);
 void TreeDestroy(tree_t* Root);
 int FillWidth(tree_t* Root);
 void TreePrint(tree_t* Tree, int n, FILE* Stream);
-int CompareFilesTest(tree_t* Root, char* ExpectedFile, char* ResultFile);
 
 #ifdef __cplusplus
 }
