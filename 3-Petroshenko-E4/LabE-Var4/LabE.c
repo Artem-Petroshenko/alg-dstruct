@@ -35,14 +35,45 @@ int FillWidth(tree_t* Root) {
 	return Own;
 }
 
-void TreePrint(tree_t* Tree, int n) {
+void TreePrint(tree_t* Tree, int n, FILE* Stream) {
 	if (Tree)
 	{
-		TreePrint(Tree->Right, n + 2);
-		for (int i = 0; i < n; i++) putchar(' ');
-		puts(Tree->String);
-		for (int i = 0; i < n; i++) putchar(' ');
-		printf("%i\n", Tree->SubTree);
-		TreePrint(Tree->Left, n + 2);
+		TreePrint(Tree->Right, n + 2, Stream);
+		for (int i = 0; i < n; i++) 
+			fprintf(Stream, " ");
+		fputs(Tree->String, Stream);
+		fprintf(Stream, "\n");
+		for (int i = 0; i < n; i++) 
+			fprintf(Stream, " ");
+		fprintf(Stream, "%i\n", Tree->SubTree);
+		TreePrint(Tree->Left, n + 2, Stream);
 	}
+}
+
+//Possibly needed function
+int CompareFilesTest(tree_t* Root, char* ExpectedFile, char* ResultFile) {
+	char ExpectedSymbol, ResultSymbol;
+	FILE* Result = fopen(ResultFile, "w");
+	if (!Result)
+		return -1;
+	TreePrint(Root, 0, Result);
+	fclose(Result);
+	FILE* Expect = fopen(ExpectedFile, "r");
+	if (!Expect)
+		return -1;
+	Result = fopen(ResultFile, "r");
+	if (!Result) {
+		fclose(Expect);
+		return -1;
+	}
+	while (fscanf(Expect, "%c", &ExpectedSymbol) != EOF && fscanf(Result, "%c", &ResultSymbol) != EOF) {
+		if (ExpectedSymbol != ResultSymbol) {
+			fclose(Expect);
+			fclose(Result);
+			return 0;
+		}
+	}
+	fclose(Expect);
+	fclose(Result);
+	return 1;
 }
