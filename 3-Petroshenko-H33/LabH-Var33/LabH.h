@@ -5,8 +5,8 @@
 #include <stdlib.h>
 
 typedef struct treap_t {
-	double x;
-	double c;
+	int X;
+	int C;
 	struct treap_t* Left;
 	struct treap_t* Right;
 } treap_t;
@@ -23,4 +23,4 @@ treap_t* Insert(treap_t* T, int Key, int Priority);
 treap_t* Remove(treap_t* T, int Key);
 void TreapDestroy(treap_t* T);
 int MaxPriority(treap_t* T, int Key1, int Key2);
-int Solution(FILE* Streamin, FILE* Streamout);
+int Solution(FILE* StreamIn, FILE* StreamOut);
