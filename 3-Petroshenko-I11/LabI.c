@@ -1,294 +1,403 @@
 #include "LabI.h"
 
-tree_t* InitNode(int k) {
-	tree_t* newNode = (tree_t*)malloc(sizeof(tree_t));
-	if (!newNode)
+tree_t* InitNode(tree_t* brother, int key, tree_t* pointer) {
+	tree_t* res = (tree_t*)malloc(sizeof(tree_t));
+	if (res) {
+		res->full = false;
+		res->key1 = key;
+		res->left = pointer;
+		if (brother) {
+			if ((res->height = brother->height)) 
+				res->left->parent = res;
+			res->parent = brother->parent;
+			res->right = brother->right;
+			brother->right = res;
+		}
+		else {
+			res->height = 0;
+			res->parent = NULL;
+			res->right = NULL;
+		}
+	}
+	return res;
+}
+
+tree_t* SearchNode(tree_t* tree, int key) {
+	if (!tree)
 		return NULL;
-	newNode->key1 = k;
-	newNode->key2 = -1;
-	newNode->left = NULL;
-	newNode->mid = NULL;
-	newNode->right = NULL;
-	newNode->extraChild = NULL;
-	newNode->parent = NULL;
-	newNode->length = 0;
-	return newNode;
-}
-
-tree_t* SearchNode(tree_t* root, int x) {
-	if (!root)
-		return root;
-	tree_t* t = root;
-	while (t->length) {
-		if (t->length == 2)
-			if (t->key1 < x)
-				t = t->right;
-			else
-				t = t->left;
-		else if (t->key2 < x)
-			t = t->right;
-		else if (t->key1 < x)
-			t = t->mid;
+	tree_t* cur = tree;
+	while (cur->height) {
+		if (key <= cur->key1)
+			cur = cur->left;
+		else if (cur->full && key > cur->key2)
+			cur = cur->right;
 		else
-			t = t->left;
+			cur = cur->mid;
 	}
-	return t;
+	return cur;
 }
 
-int MaxKey(tree_t* t) { 
-	tree_t* a = t;
-	while (a->length)
-		a = a->right;
-	return a->key1;
+bool FindNode(tree_t* tree, int key) {
+	if (!tree) {
+		return false;
+	}
+	tree_t* leaf = SearchNode(tree, key);
+	if (key == leaf->key1 || (leaf->full && key == leaf->key2)) {
+		return true;
+	}
+	return false;
 }
 
-void Swap(tree_t** t1, tree_t** t2) {
-	tree_t* tmp = *t1;
-	*t1 = *t2;
-	*t2 = tmp;
-	return;
+tree_t* root(tree_t* node) {
+	tree_t* cur = node;
+	while (cur->parent) 
+		cur = cur->parent;
+	return cur;
 }
 
-tree_t* SortSons(tree_t* t) {
-	if (t->length == 2)
-		if (t->right->key1 < t->left->key1)
-			Swap(&t->right, &t->left);
-	if (t->length == 3) {
-		if (t->right->key1 < t->mid->key1)
-			Swap(&t->right, &t->mid);
-		if (t->mid->key1 < t->left->key1)
-			Swap(&t->mid, &t->left);
-		if (t->right->key1 < t->mid->key1)
-			Swap(&t->right, &t->mid);
-	}
-	return t;
-}
-
-tree_t* UpdateKeys(tree_t* t) {
-	tree_t* a = t->parent;
-	while (a) {
-		a->key1 = MaxKey(a->left);
-		if (a->mid)
-			a->key2 = MaxKey(a->mid);
-		else
-			a->key2 = -1;
-		a = a->parent;
-	}
-	return t->parent;
-}
-
-tree_t* SplitParent(tree_t* t) {
-	if (t->length == 3) {
-		t->mid = t->extraChild;
-		t->extraChild = NULL;
-		t = SortSons(t);
-		return t;
-	}
-	if (t->length == 4) {
-		tree_t* a = InitNode(t->right->key1);
-		a->parent = t->parent;
-		a->right = t->right;
-		t->right->parent = a;
-		if (t->extraChild->key1 > t->mid->key1) {
-			a->left = t->extraChild;
-			t->right = t->mid;
-		}
-		else {
-			a->left = t->mid;
-			t->right = t->extraChild;
-			t->extraChild->parent = t;
-		}
-		a->left->parent = a;
-		t->extraChild = NULL;
-		t->mid = NULL;
-		a->length = 2;
-		t->length = 2;
-		a = SortSons(a);
-		t = SortSons(t);
-		a = UpdateKeys(a->left);
-		t = UpdateKeys(t->left);
-
-		if (t->parent) {
-			t->parent->extraChild = a;
-			t->parent->length++;
-			t->parent = SplitParent(t->parent);
-			return t;
-		}
-		else {
-			tree_t* newRoot = InitNode(-1);
-			if (!newRoot) {
-				free(a);
-				return t;
-			}
-			newRoot->left = t;
-			newRoot->right = a;
-			t->parent = newRoot;
-			a->parent = newRoot;
-			newRoot->length = 2;
-			return newRoot;
-		}
-	}
-}
-
-tree_t* Insert(tree_t* root, int x) {
-	tree_t* newNode = InitNode(x);
-	if (!newNode)
-		return root;
-	if (!root) {
-		root = newNode;
-		return root;
-	}
-	tree_t* a = SearchNode(root, x);
-	if (a->key1 == x)
-	{
-		free(newNode);
-		return root;
-	}
-	if (!a->parent) {
-		tree_t* t = InitNode(-1);
-		if (!t) {
-			free(newNode);
-			return root;
-		}
-		t->right = a;
-		t->left = newNode;
-		a->parent = t;
-		newNode->parent = t;
-		t->length = 2;
-		t = SortSons(t);
-		newNode = UpdateKeys(newNode);
-		return t;
+void LeafInsert(tree_t* node, int key, tree_t* pointer) {
+	if (key > node->key1) {
+		node->key2 = key;
+		node->mid = pointer;
 	}
 	else {
-		tree_t* p = a->parent;
-		p->extraChild = newNode;
-		newNode->parent = p;
-		p->length++;
-		p = SplitParent(p);
-		newNode = UpdateKeys(newNode);
-		if (!p->parent)
-			return p;
-		else
-			return root;
+		node->key2 = node->key1;
+		node->mid = node->left;
+		node->key1 = key;
+		node->left = pointer;
 	}
+}
+
+tree_t* Insert(tree_t* tree, int key, tree_t* pointer) {
+	if (!tree) 
+		return InitNode(NULL, key, pointer);
+	tree_t* leaf = SearchNode(tree, key);
+	if (key == leaf->key1 || (leaf->full && key == leaf->key2)) 
+		return tree;
+	if (!leaf->full) {
+		LeafInsert(leaf, key, pointer);
+		leaf->full = true;
+		return tree;
+	}
+	else {
+		if (key < leaf->key1) {
+			tree_t* next = InitNode(leaf, leaf->key2, leaf->mid);
+			if (!next) {
+				TreeDestroy(tree);
+				return NULL;
+			}
+			LeafInsert(leaf, key, pointer);
+			return SplitParent(leaf, leaf->key2);
+		}
+		else if (key < leaf->key2) {
+			tree_t* next = InitNode(leaf, leaf->key2, leaf->mid);
+			if (!next) {
+				TreeDestroy(tree);
+				return NULL;
+			}
+			LeafInsert(leaf, key, pointer);
+			return SplitParent(leaf, key);
+		}
+		else {
+			tree_t* next = InitNode(leaf, key, pointer);
+			if (!next) {
+				TreeDestroy(tree);
+				return NULL;
+			}
+			return SplitParent(leaf, leaf->key2);
+		}
+	}
+}
+
+tree_t* SplitParent(tree_t* son, int key) {
+	tree_t* node = son->parent;
+	if (!node) {
+		node = InitNode(NULL, key, son);
+		if (!node) {
+			TreeDestroy(son->right);
+			TreeDestroy(son);
+			return NULL;
+		}
+		node->height = son->height + 1;
+		node->mid = son->right;
+		son->right = NULL;
+
+		son->parent = node;
+		node->mid->parent = node;
+		return node;
+	}
+	if (!node->full) {
+		if (key > node->key1) {
+			node->key2 = key;
+			node->right = son->right;
+			node->right->parent = node;
+			son->right = NULL;
+		}
+		else {
+			node->key2 = node->key1;
+			node->right = node->mid;
+
+			node->key1 = key;
+			node->mid = son->right;
+			node->mid->parent = node;
+			son->right = NULL;
+		}
+		node->full = true;
+	}
+	else {
+		if (key < node->key1) {
+			tree_t* next = InitNode(node, node->key2, node->mid);
+			if (!next) {
+				TreeDestroy(son->right);
+				TreeDestroy(root(node));
+				return NULL;
+			}
+			node->full = false;
+			node->key2 = 0;
+
+			next->mid = next->right;
+			next->right = NULL;
+			next->mid->parent = next;
+
+			int old_key = node->key1;
+			node->key1 = key;
+			node->mid = son->right;
+			son->right = NULL;
+			return SplitParent(node, old_key);
+		}
+		else if (key < node->key2) {
+			tree_t* next = InitNode(node, node->key2, son->right);
+			if (!next) {
+				TreeDestroy(son->right);
+				TreeDestroy(root(node));
+				return NULL;
+			}
+			node->full = false;
+			node->key2 = 0;
+
+			next->mid = next->right;
+			next->mid->parent = next;
+			next->right = NULL;
+			son->right = NULL;
+			return SplitParent(node, key);
+		}
+		else {
+			tree_t* next = InitNode(node, key, node->right);
+			if (!next) {
+				TreeDestroy(son->right);
+				TreeDestroy(root(node));
+				return NULL;
+			}
+			node->full = false;
+			int old_key = node->key2;
+			node->key2 = 0;
+			next->mid = son->right;
+			next->right = NULL;
+			next->mid->parent = next;
+			son->right = NULL;
+			return SplitParent(node, old_key);
+		}
+	}
+	return root(node);
 }
 
 void TreeDestroy(tree_t* root) {
 	if (root) {
-		TreeDestroy(root->left);
-		TreeDestroy(root->mid);
-		TreeDestroy(root->right);
-		TreeDestroy(root->extraChild);
+		if (root->height) {
+			TreeDestroy(root->left);
+			TreeDestroy(root->mid);
+			if (root->full) 
+				TreeDestroy(root->right);
+		}
 		free(root);
 	}
-	return;
 }
 
-tree_t* Remove(tree_t* root, int x) {
-	tree_t* t = SearchNode(root, x);
-	if (!t || t->key1 != x)
-		return root;
-	tree_t* p = t->parent;
-	if (!p) {
-		TreeDestroy(t);
-		return root;
-	}
-	if (p->length == 3) {
-		if (t == p->left) {
-			free(t);
-			p->left = p->mid;
-		}
-		else if (t == p->right) {
-			free(t);
-			p->right = p->mid;
-		}
-		p->mid = NULL;
-		p->length--;
-		return root;
+void PrintTree(tree_t* tree, int offset) {
+	if (!tree) 
+		return;
+	if (!tree->height) {
+		if (offset > 0) 
+			for (int i = 0; i < offset; i++) 
+				printf(" ");
+		printf("[%2d", tree->key1);
+		if (tree->full) 
+			printf(", %2d", tree->key2);
+		printf("]\n");
 	}
 	else {
-		tree_t* b = t == p->left ? p->right : p->left;
-		if (!p->parent) {
-			root = b;
-			root->parent = NULL;
-			free(t);
-			free(p);
-			return root;
+		PrintTree(tree->left, offset + 2);
+		if (!tree->full) {
+			if (offset > 0) 
+				for (int i = 0; i < offset; i++) 
+					printf(" ");
+			printf("%2d\n", tree->key1);
+			PrintTree(tree->mid, offset + 2);
 		}
 		else {
-			tree_t* gp = p->parent;
-			if (gp->length == 2) {
-				tree_t* np = p == gp->left ? gp->right : gp->left;
-				np->extraChild = b;
-				np->length++;
-				b->parent = np;
-				free(t);
-				np = SplitParent(np);
-				if (np->length == 3) {
-					if (!gp->parent) {
-						root = np;
-						np->parent = NULL;
-					}
-					else {
-						if (gp == gp->parent->left)
-							gp->parent->left = np;
-						else
-							gp->parent->right = np;
-						np->parent = gp->parent;
-					}
-					free(p);
-				}
-				else {
-					if (p == gp->left)
-						gp->left = gp->mid;
-					if (p == gp->right)
-						gp->right = gp->mid;
-					gp->mid = NULL;
-					free(p);
-					gp->length--;
-				}
-				np = UpdateKeys(b);
-			}
-			else {
-				//in case p is a mid child we take np as the best of left and right, in case p is a right or left child we take np as a mid
-				tree_t* np = p == gp->mid ? (gp->left->length < gp->right->length ? gp->left : gp->right) : gp->mid;
-				np->extraChild = b;
-				np->length++;
-				b->parent = np;
-				free(t);
-				if (p == gp->left)
-					gp->left = gp->mid;
-				if (p == gp->right)
-					gp->right = gp->mid;
-				free(p);
-				gp->length--;
-				np = SplitParent(np);
-				b = UpdateKeys(b);
-			}
+			for (int i = 0; i < offset; i++) 
+				printf(" ");
+			printf("%2d\n", tree->key1);
+			PrintTree(tree->mid, offset + 2);
+			for (int i = 0; i < offset; i++) 
+				printf(" ");
+			printf("%2d\n", tree->key2);
+			PrintTree(tree->right, offset + 2);
 		}
 	}
-	return root;
 }
 
-void PrintTree(tree_t* t, int n) {
-	if (!t) {
-		return;
-	}
-	else {
-		PrintTree(t->right, n + 2);
-		if (t->length == 3) {
-			for (int i = 0; i < n; i++) {
-				printf(" ");
+tree_t* MergeTree(tree_t* left, tree_t* right) {
+	if (!left)
+		return right;
+	if (!right)
+		return left;
+	if (left->height == right->height) {
+		tree_t* leftParent = left->parent;
+		tree_t* rightParent = right->parent;
+		int lmax;
+		tree_t* cur = left;
+		while (cur->height)
+			cur = (!cur->full) ? cur->mid : cur->right;
+		lmax = (!cur->full) ? cur->key1 : cur->key2;
+		if (leftParent) {
+			right->parent = leftParent;
+			if (!leftParent->full) {
+				leftParent->key2 = lmax;
+				leftParent->right = right;
+				leftParent->full = true;
+				return root(leftParent);
 			}
-			printf("%d\n", t->key2);
-			PrintTree(t->mid, n + 2);
+			else {
+				tree_t* next = InitNode(leftParent, lmax, left);
+				next->mid = right;
+				right->parent = next;
+				next->right = NULL;
+				leftParent->full = false;
+				return SplitParent(leftParent, leftParent->key2);
+			}
 		}
-		for (int i = 0; i < n; i++) {
-			printf(" ");
+		else if (rightParent) {
+			left->parent = rightParent;
+			if (!rightParent->full) {
+				rightParent->key2 = rightParent->key1;
+				rightParent->right = rightParent->mid;
+				rightParent->mid = rightParent->left;
+
+				rightParent->key1 = lmax;
+				rightParent->left = left;
+				rightParent->full = true;
+				return root(rightParent);
+			}
+			else {
+				tree_t* next = InitNode(rightParent, rightParent->key2, rightParent->mid);
+				rightParent->full = false;
+				next->mid = next->right;
+				next->mid->parent = next;
+				next->right = NULL;
+				int old_key = rightParent->key1;
+				rightParent->mid = rightParent->left;
+				rightParent->left = left;
+				rightParent->key1 = lmax;
+				return SplitParent(rightParent, old_key);
+			}
 		}
-		printf("%d\n", t->key1);
-		PrintTree(t->left, n + 2);
+		else {
+			tree_t* tree = InitNode(NULL, lmax, left);
+			if (!tree)
+				return NULL;
+			tree->height = left->height + 1;
+			tree->mid = right;
+			left->parent = tree;
+			right->parent = tree;
+			return tree;
+		}
 	}
+	if (left->height < right->height)
+		return MergeTree(left, right->left);
+	else
+		return MergeTree((!left->full) ? left->mid : left->right, right);
+}
+
+tree_t* Extract(tree_t** ptr) {
+	tree_t* res = *ptr;
+	*ptr = NULL;
+	res->parent = NULL;
+	return res;
+}
+
+tree_t* SplitTree(tree_t* tree, int key, tree_t** pLeft, tree_t** pRight) {
+	if (tree) {
+		if (tree->height) {
+			tree_t* left = Extract(&tree->left);
+			tree_t* mid = Extract(&tree->mid);
+			tree_t* right = NULL;
+			if (tree->full)
+				right = Extract(&tree->right);
+			if (key <= tree->key1) {
+				if (right)
+					*pRight = MergeTree(right, *pRight);
+				*pRight = MergeTree(mid, *pRight);
+				free(tree);
+				return SplitTree(left, key, pLeft, pRight);
+			}
+			*pLeft = MergeTree(*pLeft, left);
+			if (tree->full && key > tree->key2) {
+				*pLeft = MergeTree(*pLeft, mid);
+				free(tree);
+				return SplitTree(right, key, pLeft, pRight);
+			}
+			if (right)
+				*pRight = MergeTree(right, *pRight);
+			free(tree);
+			return SplitTree(mid, key, pLeft, pRight);
+		}
+		if (key < tree->key1) {
+			*pRight = Insert(*pRight, tree->key1, tree->left);
+			if (tree->full)
+				*pRight = Insert(*pRight, tree->key2, tree->mid);
+			free(tree);
+			return NULL;
+		}
+		if (key == tree->key1) {
+			if (tree->full)
+				*pRight = Insert(*pRight, tree->key2, tree->mid);
+			tree->parent = NULL;
+			tree->key2 = 0;
+			tree->mid = NULL;
+			return tree;
+		}
+		*pLeft = Insert(*pLeft, tree->key1, tree->left);
+		if (tree->full && key < tree->key2) {
+			*pRight = Insert(*pRight, tree->key2, tree->mid);
+			free(tree);
+			return NULL;
+		}
+		if (tree->full && key == tree->key2) {
+			tree->parent = NULL;
+			tree->key1 = key;
+			tree->left = tree->mid;
+			tree->key2 = 0;
+			tree->mid = NULL;
+			tree->full = false;
+			return tree;
+		}
+		if (tree->full)
+			*pLeft = Insert(*pLeft, tree->key2, tree->mid);
+		free(tree);
+		return NULL;
+	}
+	return NULL;
+}
+
+tree_t* Remove(tree_t* tree, int key) {
+	tree_t* left = NULL;
+	tree_t* right = NULL;
+	if (!FindNode(tree, key))
+		return tree;
+	tree_t* m = SplitTree(tree, key, &left, &right);
+	free(m);
+	return MergeTree(left, right);
 }
 
 int Solution(FILE* streamIn, FILE* streamOut) {
@@ -300,20 +409,20 @@ int Solution(FILE* streamIn, FILE* streamOut) {
 		sscanf(lineBuffer, "%c%i", &action, &number);
 		switch (action) {
 		case 'a':
-			t = Insert(t, number);
+			t = Insert(t, number, NULL);
 			break;
 		case 'r':
 			t = Remove(t, number);
 			break;
 		case 'f':
-			if (SearchNode(t, number) && SearchNode(t, number)->key1 == number)
+			if (FindNode(t, number))
 				fprintf(streamOut, "yes\n");
 			else
 				fprintf(streamOut, "no\n");
 			break;
-		/*case 'p':
-			PrintTree(t, 0);
-			break;*/
+			case 'p':
+				PrintTree(t, 0);
+				break;
 		default:
 			TreeDestroy(t);
 			return 0;
