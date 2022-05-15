@@ -38,17 +38,15 @@ tree_t* SearchNode(tree_t* tree, int key) {
 }
 
 bool FindNode(tree_t* tree, int key) {
-	if (!tree) {
+	if (!tree) 
 		return false;
-	}
 	tree_t* leaf = SearchNode(tree, key);
-	if (key == leaf->key1 || (leaf->full && key == leaf->key2)) {
+	if (key == leaf->key1 || (leaf->full && key == leaf->key2))
 		return true;
-	}
 	return false;
 }
 
-tree_t* root(tree_t* node) {
+tree_t* Root(tree_t* node) {
 	tree_t* cur = node;
 	while (cur->parent) 
 		cur = cur->parent;
@@ -121,7 +119,6 @@ tree_t* SplitParent(tree_t* son, int key) {
 		node->height = son->height + 1;
 		node->mid = son->right;
 		son->right = NULL;
-
 		son->parent = node;
 		node->mid->parent = node;
 		return node;
@@ -136,7 +133,6 @@ tree_t* SplitParent(tree_t* son, int key) {
 		else {
 			node->key2 = node->key1;
 			node->right = node->mid;
-
 			node->key1 = key;
 			node->mid = son->right;
 			node->mid->parent = node;
@@ -149,16 +145,14 @@ tree_t* SplitParent(tree_t* son, int key) {
 			tree_t* next = InitNode(node, node->key2, node->mid);
 			if (!next) {
 				TreeDestroy(son->right);
-				TreeDestroy(root(node));
+				TreeDestroy(Root(node));
 				return NULL;
 			}
 			node->full = false;
 			node->key2 = 0;
-
 			next->mid = next->right;
 			next->right = NULL;
 			next->mid->parent = next;
-
 			int old_key = node->key1;
 			node->key1 = key;
 			node->mid = son->right;
@@ -169,12 +163,11 @@ tree_t* SplitParent(tree_t* son, int key) {
 			tree_t* next = InitNode(node, node->key2, son->right);
 			if (!next) {
 				TreeDestroy(son->right);
-				TreeDestroy(root(node));
+				TreeDestroy(Root(node));
 				return NULL;
 			}
 			node->full = false;
 			node->key2 = 0;
-
 			next->mid = next->right;
 			next->mid->parent = next;
 			next->right = NULL;
@@ -185,7 +178,7 @@ tree_t* SplitParent(tree_t* son, int key) {
 			tree_t* next = InitNode(node, key, node->right);
 			if (!next) {
 				TreeDestroy(son->right);
-				TreeDestroy(root(node));
+				TreeDestroy(Root(node));
 				return NULL;
 			}
 			node->full = false;
@@ -198,7 +191,7 @@ tree_t* SplitParent(tree_t* son, int key) {
 			return SplitParent(node, old_key);
 		}
 	}
-	return root(node);
+	return Root(node);
 }
 
 void TreeDestroy(tree_t* root) {
@@ -266,10 +259,12 @@ tree_t* MergeTree(tree_t* left, tree_t* right) {
 				leftParent->key2 = lmax;
 				leftParent->right = right;
 				leftParent->full = true;
-				return root(leftParent);
+				return Root(leftParent);
 			}
 			else {
 				tree_t* next = InitNode(leftParent, lmax, left);
+				if (!next)
+					return NULL;
 				next->mid = right;
 				right->parent = next;
 				next->right = NULL;
@@ -287,10 +282,12 @@ tree_t* MergeTree(tree_t* left, tree_t* right) {
 				rightParent->key1 = lmax;
 				rightParent->left = left;
 				rightParent->full = true;
-				return root(rightParent);
+				return Root(rightParent);
 			}
 			else {
 				tree_t* next = InitNode(rightParent, rightParent->key2, rightParent->mid);
+				if (!next)
+					return NULL;
 				rightParent->full = false;
 				next->mid = next->right;
 				next->mid->parent = next;
@@ -420,19 +417,11 @@ int Solution(FILE* streamIn, FILE* streamOut) {
 			else
 				fprintf(streamOut, "no\n");
 			break;
-			case 'p':
-				PrintTree(t, 0);
-				break;
 		default:
 			TreeDestroy(t);
 			return 0;
 		}
 	}
 	TreeDestroy(t);
-	return 0;
-}
-
-int main(void) {
-	Solution(stdin, stdout);
 	return 0;
 }
