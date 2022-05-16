@@ -53,6 +53,8 @@ HashTable* InitTable(unsigned int size) {
 }
 
 bool Find(HashTable* table, unsigned int key) {
+	if (!table)
+		return false;
 	int x = key % table->size;
 	int y = 1 + key % (table->size - 1);
 	for (int i = 0; i < table->size; i++) {
@@ -124,6 +126,8 @@ int Solution(FILE* streamIn, FILE* streamOut) {
 	unsigned int number;
 	char someStr[10] = "asfbjfs";
 	HashTable* t = InitTable(FIRST_SIZE);
+	if (!t)
+		return 0;
 	while (fgets(lineBuffer, 16, streamIn)) {
 		sscanf(lineBuffer, "%c%d", &action, &number);
 		switch (action) {
