@@ -2,7 +2,7 @@
 
 #define _CRT_SECURE_NO_WARNINGS
 
-#define FIRST_SIZE 3
+#define FIRST_SIZE 987453
 
 #include <stdio.h>
 #include <stdlib.h>

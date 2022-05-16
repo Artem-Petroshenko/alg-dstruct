@@ -51,42 +51,14 @@ void TableDestroy(HashTable* table, int index) {
 	return;
 }
 
-HashTable* Resize(HashTable* table) {
-	HashTable* newTable = InitTable(table->size * 2);
-	if (!newTable)
-		return NULL;
-	int key = 0;
-	int x, y;
-	for (int i = 0; i < table->size; i++) {
-		if (table->nodes[i].isFilled) {
-			key = table->nodes[i].key;
-			x = key % newTable->size;
-			y = 1 + key % (newTable->size - 1);
-			for (int j = 0; j < newTable->size; j++) {
-				int index = (x + j * y) % newTable->size;
-				if (!newTable->nodes[index].isFilled) {
-					newTable->nodes[index].key = key;
-					newTable->nodes[index].str = MyStrcpy(table->nodes[i].str);
-					if (!newTable->nodes[index].str) {
-						TableDestroy(table, index);
-						return NULL;
-					}
-					newTable->nodes[index].isFilled = true;
-					break;
-				}
-			}
-		}
-	}
-	return newTable;
-}
-
 HashTable* Add(HashTable* table, unsigned int key, char* str) {
 	int x = key % table->size;
 	int y = 1 + key % (table->size - 1);
+	int index;
 	if (Find(table, key))
 		return table;
 	for (int i = 0; i < table->size; i++) {
-		int index = (x + i * y) % table->size;
+		index = (x + i * y) % table->size;
 		if (!table->nodes[index].isFilled) {
 			table->nodes[index].key = key;
 			table->nodes[index].str = MyStrcpy(str);
@@ -96,8 +68,6 @@ HashTable* Add(HashTable* table, unsigned int key, char* str) {
 			return table;
 		}
 	}
-	table = Resize(table);
-	table = Add(table, key, str);
 	return table;
 }
 
