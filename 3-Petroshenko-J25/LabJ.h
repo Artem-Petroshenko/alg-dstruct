@@ -2,7 +2,7 @@
 
 #define _CRT_SECURE_NO_WARNINGS
 
-#define FIRST_SIZE 987453
+#define FIRST_SIZE 3
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -21,8 +21,8 @@ typedef struct {
 } HashTable;
 
 HashTable* InitTable(unsigned int size);
-bool Find(HashTable* table, unsigned int key);
-void TableDestroy(HashTable* table, int index);
-HashTable* Add(HashTable* table, unsigned int key, char* str);
-HashTable* Remove(HashTable* table, unsigned int key);
+bool Find(HashTable* table, char* str);
+void TableDestroy(HashTable* table);
+HashTable* Add(HashTable* table, char* str);
+HashTable* Remove(HashTable* table, char* str);
 int Solution(FILE* streamIn, FILE* streamOut);

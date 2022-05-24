@@ -25,15 +25,26 @@ HashTable* InitTable(unsigned int size) {
 	return table;
 }
 
-bool Find(HashTable* table, unsigned int key) {
+unsigned int Str2i(char* str) {
+	unsigned int key = 0;
+	int i = 0;
+	while (str[i]) {
+		key = key * 10 + (str[i] - '0');
+		i++;
+	}
+	return key;
+}
+
+bool Find(HashTable* table, char* str) {
 	if (!table)
 		return false;
+	unsigned int key = Str2i(str);
 	int x = key % table->size;
 	int y = 1 + key % (table->size - 1);
 	for (int i = 0; i < table->size; i++) {
 		int index = (x + i * y) % table->size;
 		if (table->nodes[index].isFilled) {
-			if (table->nodes[index].key == key)
+			if (table->nodes[index].key == key && !strcmp(table->nodes[index].str, str))
 				return true;
 		}
 		else
@@ -42,8 +53,8 @@ bool Find(HashTable* table, unsigned int key) {
 	return false;
 }
 
-void TableDestroy(HashTable* table, int index) {
-	for (int i = 0; i < index; i++) 
+void TableDestroy(HashTable* table) {
+	for (int i = 0; i < table->size; i++) 
 		if (table->nodes[i].str) {
 			free(table->nodes[i].str);
 			table->nodes[i].str = NULL;
@@ -53,11 +64,12 @@ void TableDestroy(HashTable* table, int index) {
 	return;
 }
 
-HashTable* Add(HashTable* table, unsigned int key, char* str) {
+HashTable* Add(HashTable* table, char* str) {
+	unsigned int key = Str2i(str);
 	int x = key % table->size;
 	int y = 1 + key % (table->size - 1);
 	int index;
-	if (Find(table, key))
+	if (Find(table, str))
 		return table;
 	for (int i = 0; i < table->size; i++) {
 		index = (x + i * y) % table->size;
@@ -73,15 +85,16 @@ HashTable* Add(HashTable* table, unsigned int key, char* str) {
 	return table;
 }
 
-HashTable* Remove(HashTable* table, unsigned int key) {
+HashTable* Remove(HashTable* table, char* str) {
+	unsigned int key = Str2i(str);
 	int x = key % table->size;
 	int y = 1 + key % (table->size - 1);
-	if (!Find(table, key))
+	if (!Find(table, str))
 		return table;
 	for (int i = 0; i < table->size; i++) {
 		int index = (x + i * y) % table->size;
 		if (table->nodes[index].isFilled) {
-			if (table->nodes[index].key == key) {
+			if (table->nodes[index].key == key && !strcmp(table->nodes[index].str, str)) {
 				free(table->nodes[index].str);
 				table->nodes[index].str = NULL;
 				table->nodes[index].isFilled = false;
@@ -94,36 +107,30 @@ HashTable* Remove(HashTable* table, unsigned int key) {
 int Solution(FILE* streamIn, FILE* streamOut) {
 	char lineBuffer[16] = " ";
 	char action;
-	unsigned int number;
-	char someStr[10] = "asfbjfs";
+	char str[10000] = { 0 };
 	HashTable* t = InitTable(FIRST_SIZE);
 	if (!t)
 		return 0;
 	while (fgets(lineBuffer, 16, streamIn)) {
-		sscanf(lineBuffer, "%c%d", &action, &number);
+		sscanf(lineBuffer, "%c %s", &action, &str);
 		switch (action) {
 		case 'a':
-			t = Add(t, number, someStr);
+			t = Add(t, str);
 			break;
 		case 'r':
-			t = Remove(t, number);
+			t = Remove(t, str);
 			break;
 		case 'f':
-			if (Find(t, number))
+			if (Find(t, str))
 				fprintf(streamOut, "yes\n");
 			else
 				fprintf(streamOut, "no\n");
 			break;
 		default:
-			TableDestroy(t, t->size);
+			TableDestroy(t);
 			return 0;
 		}
 	}
-	TableDestroy(t, t->size);
-	return 0;
-}
-
-int main() {
-	Solution(stdin, stdout);
+	TableDestroy(t);
 	return 0;
 }
